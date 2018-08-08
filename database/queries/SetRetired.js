@@ -6,4 +6,9 @@ const Artist = require('../models/artist');
  * @return {promise} A promise that resolves after the update
  */
 module.exports = (_ids) => {
+  return Artist.update( //multi is not enabled by default. Must include it as third argument
+    { _id: { $in: _ids } }, //if id is in this list of ids
+    { retired: true }, //set these as true if part of above group
+    { multi: true }, //must include for multiple to update.
+  );
 };

@@ -6,7 +6,7 @@ const Artist = require('../models/artist');
  * containing the min and max ages, like { min: 16, max: 45 }.
  */
 module.exports = () => {
-  const minQuery = Arist.find({}) //find all artists (empty object)
+  const minQuery = Artist.find({}) //find all artists (empty object)
                   .sort({ age: 1 }) //1 = sort in ascending order
                   .limit(1) //only want first artist — DONT grab entire array of artists and get first index
                   .then(artists => artists[0].age); //only grab the age property (don't need any other information (e.g. name))

@@ -10,12 +10,12 @@ const Artist = require('../models/artist');
  */
 module.exports = (criteria, sortProperty, offset = 0, limit = 20) => {
 
-  const query = Artist.find({}) //find all instances of Artist model
+  const query = Artist.find(buildQuery(criteria)) //find all instances of Artist model
     .sort({ [sortProperty]: 1 }) //ES6 interpolated keys. Find prop and give value of 1
     .skip(offset)
     .limit(limit);
 
-  return Promise.all( [query, Artist.count()])
+  return Promise.all( [query, Artist.find(buildQuery(criteria)).count()] )
     .then((results) => {
       return {
         all: results[0],
@@ -25,3 +25,27 @@ module.exports = (criteria, sortProperty, offset = 0, limit = 20) => {
       };
     });
 };
+
+const buildQuery = (criteria) => {
+  const query = {};
+
+  if (criteria.name) {
+      query.$text = { $search: criteria.name };
+  };
+
+  if (criteria.age) {
+    query.age = {
+      $gte: criteria.age.min,
+      $lte: criteria.age.max,
+    }
+  };
+
+  if (criteria.yearsActive) {
+    query.yearsActive = {
+      $gte: criteria.yearsActive.min,
+      $lte: criteria.yearsActive.max,
+    }
+  };
+
+  return query;
+}
